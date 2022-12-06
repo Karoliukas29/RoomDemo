@@ -1,14 +1,26 @@
 package com.example.roomdemo.db
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.RenameColumn
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.AutoMigrationSpec
 
-@Database(entities = [Subscriber::class], version = 1)
+@Database(entities = [Subscriber::class],
+    version = 2,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2, spec = SubscriberDatabase.Migration1To2::class)
+    ]
+)
 abstract class SubscriberDatabase : RoomDatabase(){
 
     abstract val subscriberDAO : SubscriberDAO
+
+    @RenameColumn(tableName = "subscriber_data_table", fromColumnName = "subscriber_id",
+    toColumnName = "subs_id")
+    class Migration1To2 : AutoMigrationSpec
 
     companion object{
         @Volatile
